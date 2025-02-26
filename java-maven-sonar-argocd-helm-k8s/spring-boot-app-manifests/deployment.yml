@@ -1,4 +1,4 @@
-apiVersion: apps/v1
+apiVersion: apps/2
 kind: Deployment
 metadata:
   name: spring-boot-app
@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: spring-boot-app
-        image: nanda27kumar/ultimate-cicd-pipeline:v1
+        image: nanda27kumar/ultimate-cicd-pipeline:2
         ports:
         - containerPort: 8080
