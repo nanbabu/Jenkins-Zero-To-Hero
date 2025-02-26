@@ -17,7 +17,7 @@ pipeline {
     }
     stage('Static Code Analysis') {
       environment {
-        SONAR_URL = "http://52.90.59.230:9000"
+        SONAR_URL = "http://54.85.58.149:9000"
       }
       steps {
         withCredentials([string(credentialsId: 'sona', variable: 'sona')]) {
@@ -37,7 +37,7 @@ pipeline {
                     git config user.email "nandakumar27reddy@gmail.com"
                     git config user.name "nanbabu"
                     BUILD_NUMBER=${BUILD_NUMBER}
-                    sed -i "s/v1/${BUILD_NUMBER}/g" java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
+                    sed -i "s/2/${BUILD_NUMBER}/g" java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
                     git add java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
                     git commit -m "Update deployment image to version ${BUILD_NUMBER}"
                     git push https://${githob}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main
