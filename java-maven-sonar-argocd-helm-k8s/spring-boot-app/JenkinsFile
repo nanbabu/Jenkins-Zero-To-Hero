@@ -45,9 +45,10 @@ pipeline {
             }
         }
     }
-     stage('artifact uploded to nexus')
+    stage('artifact uploded to nexus'){
        steps{
          nexusArtifactUploader artifacts: [[artifactId: 'spring-boot-starter-web', classifier: '', file: 'target/spring-boot-web.jar', type: '.jar']], credentialsId: 'nexu', groupId: 'com.abhishek', nexusUrl: '54.167.43.126:8081', nexusVersion: 'nexus3', protocol: 'http', repository: 'spring-boot', version: '1.0'
        }
+}
   }
 }
