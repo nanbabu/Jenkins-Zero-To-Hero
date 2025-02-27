@@ -1,11 +1,11 @@
-apiVersion: apps/4
+apiVersion: apps/5
 kind: Deployment
 metadata:
   name: spring-boot-app
   labels:
     app: spring-boot-app
 spec:
-  replicas: 4
+  replicas: 5
   selector:
     matchLabels:
       app: spring-boot-app
@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: spring-boot-app
-        image: nanda27kumar/ultimate-cicd-pipeline:4
+        image: nanda27kumar/ultimate-cicd-pipeline:5
         ports:
-        - containerPort: 4040
+        - containerPort: 5050
