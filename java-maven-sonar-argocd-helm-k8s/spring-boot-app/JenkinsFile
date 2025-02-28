@@ -56,11 +56,8 @@ pipeline {
           repository: 'spring-boot',
           credentialsId: 'nexu',
           groupId: 'com.abhishek',
-          artifactId: 'spring-boot-web',
           version: '1.0',
-          artifacts: [
-            [classifier: '', file: 'java-maven-sonar-argocd-helm-k8s/spring-boot-app/target/spring-boot-web.jar', type: 'jar']
-          ]
+          artifacts: [[artifactId: 'spring-boot-web', classifier: '', file: 'java-maven-sonar-argocd-helm-k8s/spring-boot-app/target/spring-boot-web.jar', type: 'jar']]
         )
       }
     }
