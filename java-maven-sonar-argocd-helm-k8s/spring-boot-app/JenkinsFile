@@ -1,7 +1,5 @@
-pipeline {
+pipeline { 
   agent any
-    
-  
   
   stages {
     stage('Checkout') {
@@ -9,13 +7,15 @@ pipeline {
         git branch: 'main', url: 'https://github.com/nanbabu/Jenkins-Zero-To-Hero.git'
       }
     }
+    
     stage('Build and Test') {
       steps {
         sh 'ls -ltr'
-        // build the project and create a JAR file
+        // Build the project and create a JAR file
         sh 'cd java-maven-sonar-argocd-helm-k8s/spring-boot-app && mvn clean package'
       }
     }
+    
     stage('Static Code Analysis') {
       environment {
         SONAR_URL = "http://107.21.79.115:9000"
@@ -26,36 +26,43 @@ pipeline {
         }
       }
     }
-   
+    
     stage('Update Deployment File') {
-        environment {
-            GIT_REPO_NAME = "Jenkins-Zero-To-Hero"
-            GIT_USER_NAME = "nanbabu"
+      environment {
+        GIT_REPO_NAME = "Jenkins-Zero-To-Hero"
+        GIT_USER_NAME = "nanbabu"
+      }
+      steps {
+        withCredentials([string(credentialsId: 'githob', variable: 'githob')]) {
+          sh '''
+            git config user.email "nandakumar27reddy@gmail.com"
+            git config user.name "nanbabu"
+            BUILD_NUMBER=${BUILD_NUMBER}
+            sed -i "s/16/${BUILD_NUMBER}/g" java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
+            git add java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
+            git commit -m "Update deployment image to version ${BUILD_NUMBER}"
+            git push https://${githob}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main
+          '''
         }
-        steps {
-            withCredentials([string(credentialsId: 'githob', variable: 'githob')]) {
-                sh '''
-                    git config user.email "nandakumar27reddy@gmail.com"
-                    git config user.name "nanbabu"
-                    BUILD_NUMBER=${BUILD_NUMBER}
-                    sed -i "s/15/${BUILD_NUMBER}/g" java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
-                    git add java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
-                    git commit -m "Update deployment image to version ${BUILD_NUMBER}"
-                    git push https://${githob}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main
-                '''
-            }
-        }
+      }
     }
-      
-stage("Publish to Nexus Repository Manager") { 
-  steps { 
-      nexusArtifactUploader artifacts: [[artifactId: 'my-new-artifact', classifier: '', file: 'target/spring-boot-web.jar',
-      type: 'jar']], credentialsId: 'nexu', groupId: 'com.abhishek', nexusUrl: '54.167.43.126:8081', 
-       nexusVersion: 'nexus3', protocol: 'http', repository: 'spring-boot', version: '1.0'
+    
+    stage('Publish to Nexus Repository') { 
+      steps { 
+        nexusArtifactUploader(
+          nexusVersion: 'nexus3',
+          protocol: 'http',
+          nexusUrl: '54.167.43.126:8081',
+          repository: 'spring-boot',
+          credentialsId: 'nexu',
+          groupId: 'com.abhishek',
+          artifactId: 'spring-boot-web',
+          version: '1.0',
+          artifacts: [
+            [classifier: '', file: 'java-maven-sonar-argocd-helm-k8s/spring-boot-app/target/spring-boot-web.jar', type: 'jar']
+          ]
+        )
       }
     }
   }
 }
-
-
-
