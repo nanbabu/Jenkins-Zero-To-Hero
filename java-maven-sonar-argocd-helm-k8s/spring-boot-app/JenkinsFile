@@ -47,23 +47,13 @@ pipeline {
         }
     }
       
-stage('Publish to Nexus Repository') { 
-      steps { 
-        nexusArtifactUploader(
-          nexusVersion: 'nexus3',
-          protocol: 'http',
-          nexusUrl: '54.167.43.126:8081',
-          repository: 'spring-boot',
-          credentialsId: 'nexu',
-          groupId: 'com.abhishek',
-          artifactId: 'spring-boot-web',
-          version: '1.0',
-          artifacts: [
-            [classifier: '', file: 'java-maven-sonar-argocd-helm-k8s/spring-boot-app/target/spring-boot-web.jar', type: 'jar']
-          ]
-        )
- }
-}
+stage("Publish to Nexus Repository Manager") { 
+  steps { 
+      nexusArtifactUploader artifacts: [[artifactId: 'my-new-artifact', classifier: '', file: 'target/spring-boot-web.jar',
+      type: 'jar']], credentialsId: 'nexu', groupId: 'com.abhishek', nexusUrl: '54.167.43.126:8081', 
+       nexusVersion: 'nexus3', protocol: 'http', repository: 'spring-boot', version: '1.0'
+      }
+    }
   }
 }
 
