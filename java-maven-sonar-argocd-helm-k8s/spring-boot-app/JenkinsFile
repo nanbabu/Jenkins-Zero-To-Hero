@@ -1,5 +1,6 @@
 pipeline {
   agent any
+    
   
   
   stages {
@@ -37,7 +38,7 @@ pipeline {
                     git config user.email "nandakumar27reddy@gmail.com"
                     git config user.name "nanbabu"
                     BUILD_NUMBER=${BUILD_NUMBER}
-                    sed -i "s/8/${BUILD_NUMBER}/g" java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
+                    sed -i "s/11/${BUILD_NUMBER}/g" java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
                     git add java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
                     git commit -m "Update deployment image to version ${BUILD_NUMBER}"
                     git push https://${githob}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main
@@ -48,26 +49,12 @@ pipeline {
       
 stage("Publish to Nexus Repository Manager") { 
   steps { 
-    script{
-      nexusArtifactUploader(
-          nexusVersion: 'nexus3',
-          protocol: 'http',
-          nexusUrl: '54.167.43.126:8081',
-          groupId: 'com.abhishek',
-          version: '1.0',
-          repository: 'spring-boot',
-          credentialsId: 'nexu',
-          artifacts: [
-              [artifactId: projectName,
-               classifier: '',
-               file: 'target/spring-boot-web.jar',
-               type: 'jar']
-          ]
-       )
-}
+      nexusArtifactUploader artifacts: [[artifactId: 'my-new-artifact', classifier: '', file: 'target/spring-boot-web.jar',
+      type: '.jar']], credentialsId: 'nexu', groupId: 'com.abhishek', nexusUrl: '54.167.43.126:8081', 
+       nexusVersion: 'nexus3', protocol: 'http', repository: 'spring-boot', version: '1.0'
+      }
     }
   }
-}
 }
 
 
