@@ -18,7 +18,7 @@ pipeline {
     
     stage('Static Code Analysis') {
       environment {
-        SONAR_URL = "http://107.21.79.115:9000"
+        SONAR_URL = "http://34.229.199.226:9000"
       }
       steps {
         withCredentials([string(credentialsId: 'sona', variable: 'sona')]) {
@@ -52,7 +52,7 @@ pipeline {
        nexusArtifactUploader(
           nexusVersion: 'nexus3',
           protocol: 'http',
-          nexusUrl: '54.167.43.126:8081',
+          nexusUrl: '52.90.127.79:8081',
           repository: 'spring-boot',
           credentialsId: 'nexu',
           groupId: 'com.abhishek',
