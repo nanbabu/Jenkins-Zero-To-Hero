@@ -33,14 +33,16 @@ pipeline {
     }
     steps {
         script {
-             withCredentials([usernamePassword(credentialsId: 'doker', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+            withCredentials([string(credentialsId: 'doker', variable: 'doker')]) {
+             
                 sh '''
-                cd java-maven-sonar-argocd-helm-k8s/spring-boot-app
-                docker build -t ${DOCKER_IMAGE} .
-                echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-                docker push ${DOCKER_IMAGE}
-                '''
-            }
+                  cd java-maven-sonar-argocd-helm-k8s/spring-boot-app
+                  docker build -t ${DOCKER_IMAGE} .
+                  docker login -u nanda27kumar -p ${doker}
+                  
+                  docker push ${DOCKER_IMAGE}
+                  '''
+              }
           }
       }
   }
