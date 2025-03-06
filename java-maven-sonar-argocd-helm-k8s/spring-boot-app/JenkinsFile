@@ -32,11 +32,11 @@ pipeline {
         DOCKER_IMAGE = "nanda27kumar/ultimate-cicd-pipeline:${BUILD_NUMBER}"
     }
     steps {
-        withCredentials([usernamePassword(credentialsId: 'doker', usernameVariable: 'dokur', passwordVariable: 'dokur')]) {
+        withCredentials([string(credentialsId: 'doker', variable: 'doker')]) {
             sh '''
                 cd java-maven-sonar-argocd-helm-k8s/spring-boot-app
                 docker build -t ${DOCKER_IMAGE} .
-                echo "${dokur}" | docker login -u "${dokur}" --password-stdin
+               
                 docker push ${DOCKER_IMAGE}
             '''
         }
