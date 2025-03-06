@@ -59,7 +59,7 @@ pipeline {
             git config user.email "nandakumar27reddy@gmail.com"
             git config user.name "nanbabu"
             BUILD_NUMBER=${BUILD_NUMBER}
-            sed -i "s/28/${BUILD_NUMBER}/g" java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
+            sed -i "s/29/${BUILD_NUMBER}/g" java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
             git add java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
             git commit -m "Update deployment image to version ${BUILD_NUMBER}"
             git push https://${githob}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main
@@ -75,7 +75,7 @@ pipeline {
           protocol: 'http',
           nexusUrl: '52.90.127.79:8081',
           repository: 'deploy-art',
-          credentialsId: 'nexu',
+          credentialsId: 'nexxu',
           groupId: 'com.abhishek',
           version: '1.0',
           artifacts: [[artifactId: 'spring-boot-web', classifier: '', file: 'java-maven-sonar-argocd-helm-k8s/spring-boot-app/target/spring-boot-web.jar', type: 'jar']]
