@@ -27,6 +27,21 @@ pipeline {
         }
       }
     }
+    stage('Publish to Nexus Repository') { 
+      steps { 
+       nexusArtifactUploader(
+          nexusVersion: 'nexus3',
+          protocol: 'http',
+          nexusUrl: '52.90.127.79:8081',
+          repository: 'deploy-art',
+          credentialsId: 'nexxu',
+          groupId: 'com.abhishek',
+          version: '1.0',
+          artifacts: [[artifactId: 'spring-boot-demo', classifier: '', file: 'java-maven-sonar-argocd-helm-k8s/spring-boot-app/target/spring-boot-web.jar', type: 'jar']]
+        )
+      }
+    }
+  
    stage('Build and Push Docker Image') {
     environment {
         DOCKER_IMAGE = "nanda27kumar/ultimate-cicd-pipeline:${BUILD_NUMBER}"
@@ -67,20 +82,7 @@ pipeline {
         }
       }
     }
+ 
+  }   
     
-    stage('Publish to Nexus Repository') { 
-      steps { 
-       nexusArtifactUploader(
-          nexusVersion: 'nexus3',
-          protocol: 'http',
-          nexusUrl: '52.90.127.79:8081',
-          repository: 'deploy-art',
-          credentialsId: 'nexxu',
-          groupId: 'com.abhishek',
-          version: '1.0',
-          artifacts: [[artifactId: 'spring-boot-web', classifier: '', file: 'java-maven-sonar-argocd-helm-k8s/spring-boot-app/target/spring-boot-web.jar', type: 'jar']]
-        )
-      }
-    }
-  }
 }
