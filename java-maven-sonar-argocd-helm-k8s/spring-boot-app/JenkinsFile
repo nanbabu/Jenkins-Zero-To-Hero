@@ -19,11 +19,11 @@ pipeline {
     
     stage('Static Code Analysis') {
       environment {
-        SONAR_URL = "http://34.235.114.242:9000"
+        SONAR_URL = "http://3.92.20.233:9000"
       }
       steps {
-        withCredentials([string(credentialsId: 'sona', variable: 'sona')]) {
-          sh 'cd java-maven-sonar-argocd-helm-k8s/spring-boot-app && mvn sonar:sonar -Dsonar.login=$sona -Dsonar.host.url=${SONAR_URL}'
+        withCredentials([string(credentialsId: 'sonar', variable: 'sonar')]) {
+          sh 'cd java-maven-sonar-argocd-helm-k8s/spring-boot-app && mvn sonar:sonar -Dsonar.login=$sonar -Dsonar.host.url=${SONAR_URL}'
         }
       }
     }
@@ -32,9 +32,9 @@ pipeline {
        nexusArtifactUploader(
           nexusVersion: 'nexus3',
           protocol: 'http',
-          nexusUrl: '34.228.11.103:8081',
-          repository: 'my-nexus',
-          credentialsId: 'nasuccess',
+          nexusUrl: '54.205.233.135:8081',
+          repository: 'basu',
+          credentialsId: 'nexu',
           groupId: 'com.abhishek',
           version: '1.0',
           artifacts: [[artifactId: 'spring-boot-demo', classifier: '', file: 'java-maven-sonar-argocd-helm-k8s/spring-boot-app/target/spring-boot-web.jar', type: 'jar']]
