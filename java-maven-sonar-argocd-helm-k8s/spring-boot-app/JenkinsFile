@@ -74,22 +74,33 @@ pipeline {
                 git config user.email "nandakumar27reddy@gmail.com"
                 git config user.name "nanbabu"
 
-                # Extract current image tag from deployment file
-                CURRENT_TAG=$(grep -oP '(?<=image: .+:)\\d+' java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml)
+                # Define the deployment file path
+                DEPLOYMENT_FILE="java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml"
+
+                # Extract the current image tag using awk
+                CURRENT_TAG=$(awk -F ':' '/image:/ {print $NF}' $DEPLOYMENT_FILE | tr -d '[:space:]')
+
+                # Ensure the extracted tag is a valid number
+                if [[ ! "$CURRENT_TAG" =~ ^[0-9]+$ ]]; then
+                  echo "Error: Could not extract a valid image tag from $DEPLOYMENT_FILE"
+                  exit 1
+                fi
 
                 # Increment the tag
                 NEW_TAG=$((CURRENT_TAG + 1))
 
                 # Replace the old tag with the new tag
-                sed -i "s/${CURRENT_TAG}/${NEW_TAG}/g" java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
+                sed -i "s/:${CURRENT_TAG}/:${NEW_TAG}/g" "$DEPLOYMENT_FILE"
 
-                git add java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
+                # Commit and push changes
+                git add "$DEPLOYMENT_FILE"
                 git commit -m "Update deployment image to version ${NEW_TAG}"
                 git push https://${githob}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main
             '''
         }
     }
 }
+
 
   }   
     
