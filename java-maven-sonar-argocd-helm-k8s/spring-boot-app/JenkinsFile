@@ -64,25 +64,33 @@ pipeline {
      
     
     stage('Update Deployment File') {
-      environment {
+    environment {
         GIT_REPO_NAME = "Jenkins-Zero-To-Hero"
         GIT_USER_NAME = "nanbabu"
-      }
-      steps {
-        withCredentials([string(credentialsId: 'githob', variable: 'githob')]) {
-          sh '''
-            git config user.email "nandakumar27reddy@gmail.com"
-            git config user.name "nanbabu"
-            BUILD_NUMBER=${BUILD_NUMBER}
-            sed -i "s/4/${BUILD_NUMBER}/g" java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
-            git add java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
-            git commit -m "Update deployment image to version ${BUILD_NUMBER}"
-            git push https://${githob}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main
-          '''
-        }
-      }
     }
- 
+    steps {
+        withCredentials([string(credentialsId: 'githob', variable: 'githob')]) {
+            sh '''
+                git config user.email "nandakumar27reddy@gmail.com"
+                git config user.name "nanbabu"
+
+                # Extract current image tag from deployment file
+                CURRENT_TAG=$(grep -oP '(?<=image: .+:)\\d+' java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml)
+
+                # Increment the tag
+                NEW_TAG=$((CURRENT_TAG + 1))
+
+                # Replace the old tag with the new tag
+                sed -i "s/${CURRENT_TAG}/${NEW_TAG}/g" java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
+
+                git add java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
+                git commit -m "Update deployment image to version ${NEW_TAG}"
+                git push https://${githob}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main
+            '''
+        }
+    }
+}
+
   }   
     
 }
