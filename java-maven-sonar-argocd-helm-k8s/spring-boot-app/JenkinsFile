@@ -87,7 +87,7 @@ pipeline {
                 fi
 
                 # Increment the tag
-                NEW_TAG=$((CURRENT_TAG + 1))
+                NEW_TAG=$((CURRENT_TAG + 2))
 
                 # Replace the old tag with the new tag
                 sed -i "s/:${CURRENT_TAG}/:${NEW_TAG}/g" "$DEPLOYMENT_FILE"
