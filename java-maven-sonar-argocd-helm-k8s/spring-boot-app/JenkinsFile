@@ -81,7 +81,7 @@ pipeline {
                 CURRENT_TAG=$(awk -F ':' '/image:/ {print $NF}' $DEPLOYMENT_FILE | tr -d '[:space:]')
 
                 # Ensure the extracted tag is a valid number
-                if [[ ! "$CURRENT_TAG" =~ ^[0-9]+$ ]]; then
+                if [[ ! "$CURRENT_TAG" =~ ^[0-100]+$ ]]; then
                   echo "Error: Could not extract a valid image tag from $DEPLOYMENT_FILE"
                   exit 1
                 fi
